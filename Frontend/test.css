@@ -1,0 +1,11 @@
+p {
+    text-decoration: underline;
+}
+
+.Bild {
+    cursor: pointer;
+}
+
+button {
+    cursor: pointer;
+}
