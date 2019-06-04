@@ -1,0 +1,32 @@
+[
+    {
+        "Frage": "Wie gross ist der Eiffelturm?",
+        "Optionen": [
+            "200m",
+            "100m",
+            "500m",
+            "1km"
+        ],
+        "Antwort": "0"
+    },
+    {
+        "Frage": "Wie gross ist der Fernsehrturm?",
+        "Optionen": [
+            "200m",
+            "100m",
+            "500m",
+            "1km"
+        ],
+        "Antwort": "2"
+    },
+    {
+        "Frage": "wie gross ist ein Windrad?",
+        "Optionen": [
+            "200m",
+            "100m",
+            "500m",
+            "1km"
+        ],
+        "Antwort": "1"
+    }
+]
