@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %} {{frage}} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="page">
+        <table style="width:100%">
+            <tr>
+                <td>{{ optionen[0] }}</td>
+                <td>{{ optionen[2] }}</td>
+            </tr>
+            <tr>
+                <td>{{ optionen[1] }}</td>
+                <td>{{ optionen[3] }}</td>
+            </tr>
+        </table>
+    </div> 
+{% endblock %}
+
+
