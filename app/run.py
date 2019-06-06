@@ -14,7 +14,7 @@ def questions(index=None):
 
 @app.route('/')
 def start():
-    return render_template('register.html')  
+    return render_template('test.html')  
 
 
 @app.route('/register')
