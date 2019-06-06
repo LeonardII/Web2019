@@ -8,6 +8,7 @@
       <li><span>{{ g.user['username'] }}</span>
       <li><a href="{{ url_for('register') }}">Log Out</a>
     {% else %}
+    <li><a href="{{ url_for('questions') }}0">Frage</a>
       <li><a href="{{ url_for('register') }}">Register</a>
       <li><a href="{{ url_for('register') }}">Log In</a>
     {% endif %}
