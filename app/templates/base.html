@@ -1,25 +1,55 @@
 <!doctype html>
 <title>{% block title %}{% endblock %} - Base</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-<nav>
-  <h1>Quizbattle</h1>
-  <ul>
-    {% if g.user %}
-      <li><span>{{ g.user['username'] }}</span>
-      <li><a href="{{ url_for('register') }}">Log Out</a>
-    {% else %}
-    <li><a href="{{ url_for('questions') }}0">Frage</a>
-      <li><a href="{{ url_for('register') }}">Register</a>
-      <li><a href="{{ url_for('register') }}">Log In</a>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<section class="main-content columns is-fullheight">
+  <aside class="column is-2 is-narrow-mobile is-fullheight section is-hidden-mobile">
+    <p class="menu-label is-hidden-touch">Navigation</p>
+    <ul class="menu-list">
+      {% if g.user %}
+        <li><span>{{ g.user['username'] }}</span>
+          <li>
+            <a href="{{ url_for('register') }}" class="">
+              <span class="icon"><i class="fa fa-home"></i></span>Ausloggen
+            </a>
+          </li>
+      {% else %}
+        <li>
+            <a href="{{ url_for('register') }}" class="">
+            <span class="icon"><i class="fa fa-home"></i></span>Registrieren
+          </a>
+        </li>
+      <li>
+        <a href="{{ url_for('register') }}" class="">
+          <span class="icon"><i class="fa fa-home"></i></span>Anmelden
+        </a>
+      </li>
+      {% endif %}
+      <li>
+        <a href="{{ url_for('start') }}" class="is-active"> Spielen
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <section class="content">
+    <header>
+      {% block header %}{% endblock %}
+    </header>
+    
+    {% block content %}{% endblock %}
+    
+    {% for message in get_flashed_messages() %}
+      <div class="flash">{{ message }}</div>
+    {% endfor %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, messages in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+      {% endfor %}
     {% endif %}
-  </ul>
-</nav>
-<section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
-</section>
+    {% endwith %}
+  </section>
