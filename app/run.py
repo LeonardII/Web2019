@@ -1,12 +1,21 @@
-from flask import Flask, jsonify, render_template, json, flash, redirect, url_for
+from flask import Flask, jsonify, render_template, json, flash, redirect, url_for, session
 import os
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from forms import RegistrationForm, LoginForm, ScoreSubmitForm
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = '123a25d7a9273d2e115c87095c028cc1'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://GzkqBfvtZN:nfhSObaxFY@remotemysql.com:3306/GzkqBfvtZN'
+
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+from dataModels import *
+
 allQuestions = json.load(open(os.path.join(os.path.realpath(os.path.dirname(__file__)), "questions.json"), "r"))
-score = 0
+
 
 
 @app.route("/questions/")
@@ -20,23 +29,29 @@ def questions(index=None):
 
 @app.route('/play')
 def start():
-    global score
-    score = 0
+    session['score'] = 0
+    session['ques'] = 0
     return render_template('hello.html',fragen=allQuestions, index=0)  
 
 @app.route('/answerQuestion/<int:ques>/<int:ans>', methods=['GET','POST'])
 def answerQuestion(ques,ans):
-    if(int(allQuestions[ques]["Antwort"]) == ans):
-        flash(f'{allQuestions[ques]["Optionen"][ans]} is richtig ', 'success')
-        global score
-        score+=1
+    if( session.get('ques') <= ques ):
+        if( int(allQuestions[ques]["Antwort"]) == ans ):
+            flash( f'{allQuestions[ques]["Optionen"][ans]} is richtig ', 'success' )
+            session['score']+=1
+        else:
+            flash(f'{allQuestions[ques]["Optionen"][ans]} is falsch ', 'success')
+
+        session['ques']+=1
     else:
-        flash(f'{allQuestions[ques]["Optionen"][ans]} is falsch ', 'success')
+        flash('Schon beantwortet', 'success')
+
+
 
     if( ques >= len(allQuestions)-1):
         flash("",'success')
         form = ScoreSubmitForm()
-        return render_template('score.html',form=form, score=str(score)+"/"+str(len(allQuestions)))
+        return render_template('score.html',form=form, score=str(session.get('score'))+"/"+str(len(allQuestions)))
     else:
         return render_template('hello.html',fragen=allQuestions, index=ques+1)
 
@@ -61,3 +76,4 @@ def submit():
 
 if __name__ == "__main__":
     app.run()
+

@@ -16,6 +16,8 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Angemeldet bleiben')
     submit = SubmitField('Anmelden')
 
+
+
 class ScoreSubmitForm(FlaskForm):
     name = StringField('Name',validators=[DataRequired()])
     submit = SubmitField('Submit')

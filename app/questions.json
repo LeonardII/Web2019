@@ -1,31 +1,81 @@
 [
     {
-        "Frage": "Wie gross ist der Eiffelturm?",
+        "Frage": "Seit wie viel Jahren wird in Stuttgart Wein angebaut?",
         "Optionen": [
-            "200m",
-            "100m",
-            "500m",
-            "1km"
+            "Seit unter 500 Jahren",
+            "Seit 500 - 1000 Jahren",
+            "Seit 1000 - 2000 Jahren",
+            "Seit ueber 2000 Jahren"
         ],
-        "Antwort": "0"
+        "Antwort": "3"
     },
     {
-        "Frage": "Wie gross ist der Fernsehrturm?",
+        "Frage": "Wie viele SBahn Stationen sind zwischen Stadtmitte und Feuerbach?",
         "Optionen": [
-            "200m",
-            "100m",
-            "500m",
-            "1km"
+            "1",
+            "2",
+            "3",
+            "4"
+        ],
+        "Antwort": "1"
+    },
+    {
+        "Frage": "Was ist die Beste Vorlesung?",
+        "Optionen": [
+            "Mathe",
+            "ICC",
+            "Web-engeneering",
+            "Algorithmen"
         ],
         "Antwort": "2"
     },
     {
-        "Frage": "wie gross ist ein Windrad?",
+        "Frage": "Wie hoch ist der Stuttgarter Fehrnsehturm?",
         "Optionen": [
-            "200m",
-            "100m",
-            "500m",
-            "1km"
+            "68m",
+            "301m",
+            "217m",
+            "169m"
+        ],
+        "Antwort": "2"
+    },
+    {
+        "Frage": "Wie viel sollte von einer Hashmap gefüllt werden?",
+        "Optionen": [
+            "1/3",
+            "20%",
+            "1/2",
+            "80%"
+        ],
+        "Antwort": "2"
+    },
+    {
+        "Frage": "Was ist ein Digraph?",
+        "Optionen": [
+            "Ein Graph mit einfachen Verbindungen",
+            "Ein Graph mit zweifachen Verbindungen",
+            "Ein diverser Graph",
+            "Ein disjunktiver Graph"
+        ],
+        "Antwort": "0"
+    },
+    {
+        "Frage": "Wie stehst du zur aktuellen Regierung?",
+        "Optionen": [
+            "Finde ich sehr gut",
+            "Ist ok",
+            "Naja",
+            "Drecksladen"
+        ],
+        "Antwort": "0"
+    },
+    {
+        "Frage": "Was heisst 'Etwas stimmt nicht' auf Chinesisch?",
+        "Optionen": [
+            "Egal",
+            "Sum Ting Wong",
+            "Diesen Ausdruck gibt es im Chinesischen nicht",
+            "ファックユー"
         ],
         "Antwort": "1"
     }
