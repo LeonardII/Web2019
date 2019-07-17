@@ -7,13 +7,13 @@
   <aside class="column is-2 is-narrow-mobile is-fullheight section is-hidden-mobile">
     <p class="menu-label is-hidden-touch">Quizbattle</p>
     <ul class="menu-list">
-      {% if g.user %}
-        <li><span>{{ g.user['username'] }}</span>
+      {% if current_user.is_authenticated %}
+        <li><span>{{ current_user.name }}</span>
           <li>
             <a href="{{ url_for('register') }}" class="">
               <span class="icon"><i class="fa fa-home"></i></span>Ausloggen
             </a>
-          </li>
+          </li>        
       {% else %}
         <li>
             <a href="{{ url_for('register') }}" class="">
