@@ -8,28 +8,35 @@
     <p class="menu-label is-hidden-touch">Quizbattle</p>
     <ul class="menu-list">
       {% if current_user.is_authenticated %}
-        <li><span>{{ current_user.name }}</span>
+        <li><span>Hi {{ current_user.Name }}</span>
           <li>
-            <a href="{{ url_for('register') }}" class="">
-              <span class="icon"><i class="fa fa-home"></i></span>Ausloggen
+            <a href="{{ url_for('logout') }}" class="">
+              <small>Ausloggen</small>
             </a>
           </li>        
       {% else %}
         <li>
             <a href="{{ url_for('register') }}" class="">
-            <span class="icon"><i class="fa fa-home"></i></span>Registrieren
+            <span class="icon"><i class="fas fa-plus"></i></span>Registrieren
           </a>
         </li>
-      <li>
-        <a href="{{ url_for('login') }}" class="">
-          <span class="icon"><i class="fa fa-home"></i></span>Anmelden
-        </a>
-      </li>
+        <li>
+          <a href="{{ url_for('login') }}" class="">
+            <span class="icon"><i class="fas fa-sign-in-alt"></i></span>Anmelden
+          </a>
+        </li>
       {% endif %}
       <li>
         <a href="{{ url_for('start') }}" class="is-active"> Spielen
         </a>
       </li>
+      {% if current_user.is_authenticated %}
+          <li>
+            <a href="{{ url_for('suggestQuestion') }}" class="">
+              <small>Frage einreichen</small>
+            </a>
+          </li>        
+      {% endif %}
     </ul>
   </aside>
 

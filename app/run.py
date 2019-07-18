@@ -2,7 +2,10 @@ from flask import Flask, jsonify, render_template, json, flash, redirect, url_fo
 import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from forms import RegistrationForm, LoginForm, ScoreSubmitForm
+from flask_login import login_manager, LoginManager, login_required, current_user, login_user, logout_user
+from forms import *
+import random
+from collections import deque
 
 app = Flask(__name__)
 
@@ -16,8 +19,50 @@ login_manager.init_app(app)
 
 from dataModels import *
 
-allQuestions = json.load(open(os.path.join(os.path.realpath(os.path.dirname(__file__)), "questions.json"), "r"))
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
+def jsonInsert(data):
+    e = []
+    for q in data:
+        new_entry = Question(
+         Frage=q['Frage'],
+         Option_eins=q['Optionen'][0],
+         Option_zwei=q['Optionen'][1],
+         Option_drei=q['Optionen'][2],
+         Option_vier=q['Optionen'][3],
+          Antwort=q['Antwort'])
+        e.append(new_entry)
+        i+=1
+    
+    db.session.add_all(e)
+    db.session.commit()
+
+def insertQuestion(frage, optionen, antwort):
+    if(len(optionen)==4):
+        q = Question(Frage=frage,Option_eins=optionen[0],Option_zwei=optionen[1],Option_drei=optionen[2],Option_vier=optionen[3],Antwort=antwort)
+        db.session.add(q)
+        db.session.commit()
+
+def getRandomQuestion():
+    rand = random.randrange(0, session.query(Question).count())
+    row = session.query(Question)[rand]
+    return row
+        
+
+def addUser(name, email, passwort):
+    u = User(Name=name, Email=email)
+    u.set_password(passwort)
+    db.session.add(u)
+    db.session.commit()
+
+def getUser(email):
+    q = User.query.filter_by(Email=email).first()
+    db.session.commit()
+    return q
+
+allQuestions = json.load(open(os.path.join(os.path.realpath(os.path.dirname(__file__)), "questions.json"), "r"))
 
 
 @app.route("/questions/")
@@ -63,32 +108,44 @@ def answerQuestion(ques,ans):
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        flash(f'Account erstell für {form.username.data}!', 'success')
+        print(f'Account erstell für {form.username.data}!', 'success')
+        addUser(form.username.data,form.email.data,form.password.data)
         return redirect(url_for('start'))
     return render_template('register.html', form=form)  
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
+
 
 @app.route('/login', methods=['GET','POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('start'))
     form = LoginForm()
     if form.validate_on_submit():
-        # Login and validate the user.
-        # user should be an instance of your `User` class
-        login_user(user)
+        user = getUser(form.email.data)
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            return redirect(url_for('start'))
+        else:
+            return redirect(url_for('login'))
 
-        flask.flash('Logged in successfully.')
-
-        next = flask.request.args.get('next')
-        # is_safe_url should check if the url is safe for redirects.
-        # See http://flask.pocoo.org/snippets/62/ for an example.
-        if not is_safe_url(next):
-            return flask.abort(400)
-
-        return flask.redirect(next or flask.url_for('play'))
     return render_template('login.html', form=form)  
+
+@app.route('/suggestQuestion', methods=['GET','POST'])
+def suggestQuestion():
+    form = SuggestQuestionForm()
+    if form.validate_on_submit():
+        right_ans = random.randrange(4) # 0-3
+        optionen = deque([form.right_answer.data,form.false_answer_1.data,form.false_answer_2.data,form.false_answer_3.data])
+        
+        for x in range(right_ans):
+            optionen.appendleft(optionen.pop())
+
+
+        q = Question(Frage=form.question.data,Option_eins=optionen[0],Option_zwei=optionen[1],Option_drei=optionen[2],Option_vier=optionen[3],Antwort=right_ans)
+        db.session.add(q)
+        db.session.commit()
+
+    return render_template('suggestQuestion.html', form=form)  
 
 @app.route("/logout")
 @login_required
@@ -100,6 +157,7 @@ def logout():
 def submit():
     return render_template('highscore.html')
 
+
+
 if __name__ == "__main__":
     app.run()
-
