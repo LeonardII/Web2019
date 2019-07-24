@@ -5,8 +5,19 @@
 
 <section class="main-content columns is-fullheight">
   <aside class="column is-2 is-narrow-mobile is-fullheight section is-hidden-mobile">
-    <p class="menu-label is-hidden-touch">Quizbattle</p>
+    <p class="content is-large has-text-primary">Quizbattle</strong></p>
     <ul class="menu-list">
+      <li>
+        <a href="{{ url_for('start') }}" class="is-active"> Spielen
+        </a>
+      </li>
+      {% if current_user.is_authenticated %}
+          <li>
+            <a href="{{ url_for('suggestQuestion') }}" class="">
+              <small>Frage einreichen</small>
+            </a>
+          </li>        
+      {% endif %}
       {% if current_user.is_authenticated %}
         <li><span>Hi {{ current_user.Name }}</span>
           <li>
@@ -26,17 +37,6 @@
           </a>
         </li>
       {% endif %}
-      <li>
-        <a href="{{ url_for('start') }}" class="is-active"> Spielen
-        </a>
-      </li>
-      {% if current_user.is_authenticated %}
-          <li>
-            <a href="{{ url_for('suggestQuestion') }}" class="">
-              <small>Frage einreichen</small>
-            </a>
-          </li>        
-      {% endif %}
     </ul>
   </aside>
 
@@ -46,6 +46,7 @@
     </header>
     
     {% block content %}{% endblock %}
+    
     
     {% for message in get_flashed_messages() %}
       <div class="flash">{{ message }}</div>

@@ -49,6 +49,10 @@ def getRandomQuestion():
     rand = random.randrange(0, session.query(Question).count())
     row = session.query(Question)[rand]
     return row
+
+def getQuestion(i):
+    row = session.query(Question)[i]
+    return row
         
 
 def addUser(name, email, passwort):
@@ -78,16 +82,18 @@ def questions(index=None):
 def start():
     session['score'] = 0
     session['ques'] = 0
+    session['questionIndex'] = 0
     return render_template('hello.html',fragen=allQuestions, index=0)  
 
-@app.route('/answerQuestion/<int:ques>/<int:ans>', methods=['GET','POST'])
-def answerQuestion(ques,ans):
-    if( session.get('ques') <= ques ):
-        if( int(allQuestions[ques]["Antwort"]) == ans ):
-            flash( f'{allQuestions[ques]["Optionen"][ans]} is richtig ', 'success' )
+@app.route('/answerQuestion', methods=['GET','POST'])
+def answerQuestion():
+    if( session.get('ques') <= 5 ):
+        question = getQuestion[session.get('questionIndex')]
+        if( int(question["Antwort"]) == request.args.get('ans')):
+            flash( f'{getQuestion[ques]["Optionen"][ans]} is richtig ', 'success' )
             session['score']+=1
         else:
-            flash(f'{allQuestions[ques]["Optionen"][ans]} is falsch ', 'success')
+            flash(f'{ question["Optionen"][ans]} is falsch ', 'success')
 
         session['ques']+=1
     else:
@@ -100,7 +106,8 @@ def answerQuestion(ques,ans):
         form = ScoreSubmitForm()
         return render_template('score.html',form=form, score=str(session.get('score'))+"/"+str(len(allQuestions)))
     else:
-        return render_template('hello.html',fragen=allQuestions, index=ques+1)
+        nextQuestion = getQuestion[session.get('questionIndex')]
+        return render_template('hello.html',frage=nextQuestion , index=session.get('ques'))
 
 
 
@@ -126,7 +133,10 @@ def login():
             login_user(user, remember=form.remember_me.data)
             return redirect(url_for('start'))
         else:
+            flash("Login fehlgeschlagen, versuche ein anderes Passwort!",category="login")
             return redirect(url_for('login'))
+    else:
+        flash("Login fehlgeschlagen, Email ungültig!",category="login")
 
     return render_template('login.html', form=form)  
 
@@ -141,7 +151,8 @@ def suggestQuestion():
             optionen.appendleft(optionen.pop())
 
 
-        q = Question(Frage=form.question.data,Option_eins=optionen[0],Option_zwei=optionen[1],Option_drei=optionen[2],Option_vier=optionen[3],Antwort=right_ans)
+        q = Question(Frage=str(form.question.data),Option_eins=str(optionen[0]),Option_zwei=str(optionen[1]),
+        Option_drei=str(optionen[2]),Option_vier=str(optionen[3]),Antwort=str(right_ans))
         db.session.add(q)
         db.session.commit()
 

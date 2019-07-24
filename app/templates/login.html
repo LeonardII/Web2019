@@ -8,15 +8,34 @@
     <h1>Anmelden</h1>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32) }}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-        </p>
+        <div class="field">
+            <label for="email" class="label">{{ form.email.label }}</label>
+            <div class="control">
+                {{ form.email(required=True, autofocus=True, class='input') }}
+            </div>
+            {% for error in form.email.errors %}
+            <p class="help has-background-warning">
+                {{ error }}
+            </p>
+            {% endfor %}
+        </div>
+
+    
+        <div class="field">
+                <label for="password" class="label">{{ form.password.label }}</label>
+                <div class="control">
+                    {{ form.password(required=True, autofocus=True, class='input') }}
+                </div>
+                {% for error in form.password.errors %}
+                <p class="help has-background-warning">
+                    {{ error }}
+                </p>
+                {% endfor %}
+            </div>
+
         <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit() }}</p>
+        <div class="control">
+            <button class="button is-link">{{ form.submit.label }}</button>
+        </div>
     </form>
 {% endblock %}
