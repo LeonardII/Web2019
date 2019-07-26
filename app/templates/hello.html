@@ -12,17 +12,19 @@
 <div class="container column is-10">
   <div class="section">
     <div class="card" style="width:800px;">
-      <div class="card-header" ><p class="card-header-title">{{ fragen[index]["Frage"] }}</p></div>
+      <div class="card-header" ><p class="card-header-title">{{ frage.Frage }}</p></div>
       <div class="card-content"><div class="content">
-        <div class="columns">
-          <div class="column is-half"><a class="button is-light is-fullwidth" href="/answerQuestion/{{index}}/0">{{ fragen[index]["Optionen"][0] }}</a></div>
-          <div class="column is-half"><a class="button is-light is-fullwidth" href="/answerQuestion/{{index}}/2">{{ fragen[index]["Optionen"][2] }}</a></div>
-        </div>
-        
-        <div class="columns">
-          <div class="column is-half"><a class="button is-light is-fullwidth" href="/answerQuestion/{{index}}/1">{{ fragen[index]["Optionen"][1] }}</a></div>
-          <div class="column is-half"><a class="button is-light is-fullwidth" href="/answerQuestion/{{index}}/3">{{ fragen[index]["Optionen"][3] }}</a></div>
-        </div>
+        <form action="{{ url_for('answerQuestion',qid=frage.id) }}" method="post" novalidate>
+          <div class="columns">
+            <div class="column is-half">{{form.option_eins(class="button is-light") }}{{ frage.Option_eins }}</div>
+            <div class="column is-half">{{form.option_drei(class="button is-light") }}{{ frage.Option_drei }}</div>
+          </div>
+          
+          <div class="columns">
+            <div class="column is-half">{{form.option_zwei(class="button is-light") }}{{ frage.Option_zwei }}</div>
+            <div class="column is-half">{{form.option_vier(class="button is-light") }}{{ frage.Option_vier }}</div>
+          </div>
+        </form>
       </div>
     </div>
     </div>

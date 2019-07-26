@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField,HiddenField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from dataModels import User
 
@@ -38,3 +38,9 @@ class SuggestQuestionForm(FlaskForm):
 class ScoreSubmitForm(FlaskForm):
     name = StringField('Name',validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+class AnswerQuestionForm(FlaskForm):
+    option_eins = SubmitField('A')
+    option_zwei = SubmitField('B')
+    option_drei = SubmitField('C')
+    option_vier = SubmitField('D')

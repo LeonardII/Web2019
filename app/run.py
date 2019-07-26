@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, json, flash, redirect, url_for, session
+from flask import Flask, jsonify, render_template, json, flash, redirect, url_for, session, request
 import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -23,21 +23,6 @@ from dataModels import *
 def load_user(id):
     return User.query.get(int(id))
 
-def jsonInsert(data):
-    e = []
-    for q in data:
-        new_entry = Question(
-         Frage=q['Frage'],
-         Option_eins=q['Optionen'][0],
-         Option_zwei=q['Optionen'][1],
-         Option_drei=q['Optionen'][2],
-         Option_vier=q['Optionen'][3],
-          Antwort=q['Antwort'])
-        e.append(new_entry)
-        i+=1
-    
-    db.session.add_all(e)
-    db.session.commit()
 
 def insertQuestion(frage, optionen, antwort):
     if(len(optionen)==4):
@@ -46,12 +31,13 @@ def insertQuestion(frage, optionen, antwort):
         db.session.commit()
 
 def getRandomQuestion():
-    rand = random.randrange(0, session.query(Question).count())
-    row = session.query(Question)[rand]
+    rand = random.randrange(0, db.session.query(Question).count())
+    row = db.session.query(Question)[rand]
     return row
 
 def getQuestion(i):
-    row = session.query(Question)[i]
+    row = db.session.query(Question).filter_by(id=i).first()
+    db.session.commit()
     return row
         
 
@@ -69,45 +55,36 @@ def getUser(email):
 allQuestions = json.load(open(os.path.join(os.path.realpath(os.path.dirname(__file__)), "questions.json"), "r"))
 
 
-@app.route("/questions/")
-@app.route("/questions/<int:index>")
-def questions(index=None):
-    allQuestions = json.load(open(os.path.join(os.path.realpath(os.path.dirname(__file__)), "questions.json"), "r"))
-    if(index==None):
-        return jsonify(allQuestions)
-
-    return render_template('hello.html',frage=allQuestions[index]["Frage"],optionen=allQuestions[index]["Optionen"])
-
 @app.route('/play')
 def start():
-    session['score'] = 0
-    session['ques'] = 0
-    session['questionIndex'] = 0
-    return render_template('hello.html',fragen=allQuestions, index=0)  
+    nextQuestion = getRandomQuestion()
+    return redirect(url_for('answerQuestion',qid=1))  
 
-@app.route('/answerQuestion', methods=['GET','POST'])
-def answerQuestion():
-    if( session.get('ques') <= 5 ):
-        question = getQuestion[session.get('questionIndex')]
-        if( int(question["Antwort"]) == request.args.get('ans')):
-            flash( f'{getQuestion[ques]["Optionen"][ans]} is richtig ', 'success' )
-            session['score']+=1
+@app.route('/answerQuestion/<int:qid>', methods=['GET','POST'])
+def answerQuestion(qid=0):
+    form = AnswerQuestionForm()
+    if request.method=='POST':
+        antwort = None
+        if form.option_eins.data:
+            antwort = 0
+        elif form.option_zwei.data:
+            antwort = 1
+        elif form.option_drei.data:
+            antwort = 2
+        elif form.option_vier.data:
+            antwort = 3
+
+        frage = getQuestion(qid)
+        print("Frage: ",frage)
+
+        if( int(frage.Antwort) == antwort):
+            flash('Richtig ', 'success' )
         else:
-            flash(f'{ question["Optionen"][ans]} is falsch ', 'success')
-
-        session['ques']+=1
-    else:
-        flash('Schon beantwortet', 'success')
+            flash('Falsch ', 'success')
 
 
-
-    if( ques >= len(allQuestions)-1):
-        flash("",'success')
-        form = ScoreSubmitForm()
-        return render_template('score.html',form=form, score=str(session.get('score'))+"/"+str(len(allQuestions)))
-    else:
-        nextQuestion = getQuestion[session.get('questionIndex')]
-        return render_template('hello.html',frage=nextQuestion , index=session.get('ques'))
+    nextQuestion = getRandomQuestion()
+    return render_template('hello.html',frage=nextQuestion, form=form)
 
 
 
@@ -164,9 +141,6 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-@app.route('/submit')
-def submit():
-    return render_template('highscore.html')
 
 
 
